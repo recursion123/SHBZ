@@ -74,7 +74,7 @@ public class LoginActivity extends Activity {
         });
         String isSessionOutOfTime = getIntent().getStringExtra("isSessionOutOfTime");
         if (isSessionOutOfTime != null && "1".equals(isSessionOutOfTime)) {
-            Toast.makeText(this, "ÁôªÈôÜË∂ÖÊó∂ÔºåËØ∑ÈáçÊñ∞ÁôªÂΩï", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "µ«¬Ω≥¨ ±£¨«Î÷ÿ–¬µ«¬º", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -82,7 +82,7 @@ public class LoginActivity extends Activity {
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
                 case 1:
-                    Toast.makeText(getApplicationContext(), "ÁôªÂΩïÂ§±Ë¥•ÔºåË¥¶Êà∑ÊàñÂØÜÁ†ÅÈîôËØØ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "µ«¬º ß∞‹£¨’ÀªßªÚ√‹¬Î¥ÌŒÛ", Toast.LENGTH_SHORT).show();
                     editable(true);
                     break;
                 default:
@@ -128,18 +128,18 @@ public class LoginActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            // ÁõëÊéßËøîÂõûÈîÆ
-            new AlertDialog.Builder(this).setTitle("ÊèêÁ§∫")
+            // º‡øÿ∑µªÿº¸
+            new AlertDialog.Builder(this).setTitle("Ã· æ")
                     .setIconAttribute(android.R.attr.alertDialogIcon)
-                    .setMessage("Á°ÆÂÆöË¶ÅÈÄÄÂá∫Âêó?")
-                    .setPositiveButton("Á°ÆËÆ§", (dialog, which) -> {
+                    .setMessage("»∑∂®“™ÕÀ≥ˆ¬?")
+                    .setPositiveButton("»∑»œ", (dialog, which) -> {
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addCategory(Intent.CATEGORY_HOME);
                         startActivity(intent);
                         finish();
                     })
-                    .setNegativeButton("ÂèñÊ∂à", null)
+                    .setNegativeButton("»°œ˚", null)
                     .create().show();
             return false;
         }

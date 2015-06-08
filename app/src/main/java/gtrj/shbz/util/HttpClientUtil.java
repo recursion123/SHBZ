@@ -86,12 +86,12 @@ public class HttpClientUtil {
             }
             if ("{\"IsLogin\":\"3\"}".equals(result)) {
                 ContextString.SESSION = null;
-                throw new SessionOutOfTimeException("sessionè¿‡æœŸ");
+                throw new SessionOutOfTimeException("session¹ýÆÚ");
             }
             return result;
         } catch (Exception e) {
             ContextString.SESSION = null;
-            throw new SessionOutOfTimeException("sessionè¿‡æœŸ");
+            throw new SessionOutOfTimeException("session¹ýÆÚ");
         } finally {
             if (br != null)
                 try {
@@ -149,7 +149,7 @@ public class HttpClientUtil {
     }
 
     public static String multipartRequest(String method, Map<String, String> parmas, String filepath, String filefield, String fileMimeType) throws SessionOutOfTimeException {
-        Log.e("å¼€å§‹ä¸Šä¼ ","alalalla");
+        Log.e("¿ªÊ¼ÉÏ´«","alalalla");
         HttpURLConnection connection;
         DataOutputStream outputStream;
         InputStream inputStream;
@@ -230,13 +230,13 @@ public class HttpClientUtil {
             outputStream.close();
             if ("{\"IsLogin\":\"3\"}".equals(result)) {
                 ContextString.SESSION = null;
-                throw new SessionOutOfTimeException("sessionè¿‡æœŸ");
+                throw new SessionOutOfTimeException("session¹ýÆÚ");
             }
             return result;
         } catch (Exception e) {
             e.printStackTrace();
             ContextString.SESSION = null;
-            throw new SessionOutOfTimeException("sessionè¿‡æœŸ");
+            throw new SessionOutOfTimeException("session¹ýÆÚ");
         }
     }
 

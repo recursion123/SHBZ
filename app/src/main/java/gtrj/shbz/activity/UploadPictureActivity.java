@@ -113,7 +113,7 @@ public class UploadPictureActivity extends BaseActivity {
             opts = new BitmapFactory.Options();
             opts.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(path, opts);
-            // è®¡ç®—å›¾ç‰‡ç¼©æ”¾æ¯”ä¾‹
+            // ¼ÆËãÍ¼Æ¬Ëõ·Å±ÈÀý
             final int minSideLength = Math.min(width, height);
             opts.inSampleSize = computeSampleSize(opts, minSideLength,
                     width * height);

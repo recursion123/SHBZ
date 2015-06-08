@@ -121,10 +121,10 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
 
                     startActivityForResult(intent, 1);
                 } else {
-                    Toast.makeText(view.getContext(), "SDå¡ä¸å¯ç”¨", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "SD¿¨²»¿ÉÓÃ", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(view.getContext(), "è¯¥ç”¨æˆ·å·²è¢«éªŒè¯", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "¸ÃÓÃ»§ÒÑ±»ÑéÖ¤", Toast.LENGTH_SHORT).show();
             }
         });
         handleIntent(getIntent());
@@ -177,7 +177,7 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
                     thread.start();
                     break;
                 case 2:
-                    pageNum.setText(page + "/" + totalPage + " é¡µ");
+                    pageNum.setText(page + "/" + totalPage + " Ò³");
                     infoListData.clear();
                     infoListData.addAll(list);
                     adapter.notifyDataSetChanged();
@@ -304,7 +304,7 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
     }
 
 
-    //ç”Ÿæˆå¯¹åº”çš„èœå•,å¹¶æ·»åŠ åˆ°Menuä¸­
+    //Éú³É¶ÔÓ¦µÄ²Ëµ¥,²¢Ìí¼Óµ½MenuÖĞ
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
@@ -332,14 +332,11 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             id = intent.getStringExtra(SearchManager.QUERY);
             dataType = "";
-
             Message msg = msgHandler.obtainMessage();
             msg.arg1 = 1;
             msgHandler.sendMessage(msg);
         }else if("1".equals(intent.getStringExtra("finish"))){
-            Message msg = msgHandler.obtainMessage();
-            msg.arg1 = 1;
-            msgHandler.sendMessage(msg);
+            sendMessage();
         }
     }
 
@@ -389,18 +386,18 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
                 switch (sta) {
                     case "0":
                     case "1":
-                        infoViewHolder.state.setText("å·²éªŒè¯");
+                        infoViewHolder.state.setText("ÒÑÑéÖ¤");
                         infoViewHolder.state.setTextColor(Color.GREEN);
                         list.get(position).setCheckable(false);
                         break;
                     default:
-                        infoViewHolder.state.setText("æœªéªŒè¯");
+                        infoViewHolder.state.setText("Î´ÑéÖ¤");
                         infoViewHolder.state.setTextColor(Color.BLUE);
                         list.get(position).setCheckable(true);
                         break;
                 }
             } else {
-                infoViewHolder.state.setText("æœªéªŒè¯");
+                infoViewHolder.state.setText("Î´ÑéÖ¤");
                 infoViewHolder.state.setTextColor(Color.RED);
                 list.get(position).setCheckable(true);
             }

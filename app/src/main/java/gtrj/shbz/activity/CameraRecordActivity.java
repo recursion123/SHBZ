@@ -44,11 +44,11 @@ import gtrj.shbz.util.HttpClientUtil;
 
 @SuppressWarnings("deprecation")
 public class CameraRecordActivity extends Activity implements SurfaceHolder.Callback, OnClickListener, SensorEventListener {
-    private Button start;// å¼€å§‹å½•åˆ¶æŒ‰é’®
+    private Button start;// ¿ªÊ¼Â¼ÖÆ°´Å¥
     private Button retake;
     private Button upload;
-    private MediaRecorder mediarecorder;// å½•åˆ¶è§†é¢‘çš„ç±»
-    private SurfaceView surfaceview;// æ˜¾ç¤ºè§†é¢‘çš„æ§ä»¶
+    private MediaRecorder mediarecorder;// Â¼ÖÆÊÓÆµµÄÀà
+    private SurfaceView surfaceview;// ÏÔÊ¾ÊÓÆµµÄ¿Ø¼ş
     private SurfaceHolder surfaceHolder;
     private Camera camera;
     private TextView time;
@@ -63,22 +63,22 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
     int windowHeight;
     int windowWidth;
 
-    // ä¸¤æ¬¡æ£€æµ‹çš„æ—¶é—´é—´éš”
+    // Á½´Î¼ì²âµÄÊ±¼ä¼ä¸ô
     private static final int UPTATE_INTERVAL_TIME = 200;
 
-    // ä¸Šæ¬¡æ£€æµ‹æ—¶é—´
+    // ÉÏ´Î¼ì²âÊ±¼ä
     private long lastUpdateTime;
 
-    private boolean isVisible_start = true;//ä¿å­˜startæŒ‰é’®çš„æ˜¾ç¤ºçŠ¶æ€
-    private boolean canVisible_start = true;//åˆ¤æ–­startæŒ‰é’®èƒ½å¦æ˜¾ç¤º
+    private boolean isVisible_start = true;//±£´æstart°´Å¥µÄÏÔÊ¾×´Ì¬
+    private boolean canVisible_start = true;//ÅĞ¶Ïstart°´Å¥ÄÜ·ñÏÔÊ¾
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);// å»æ‰æ ‡é¢˜æ   
+        requestWindowFeature(Window.FEATURE_NO_TITLE);// È¥µô±êÌâÀ¸  
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);// è®¾ç½®å…¨å±
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//æ¨ªå±
-        // é€‰æ‹©æ”¯æŒåŠé€æ˜æ¨¡å¼,åœ¨æœ‰surfaceviewçš„activityä¸­ä½¿ç”¨ã€‚  
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// ÉèÖÃÈ«ÆÁ
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//ºáÆÁ
+        // Ñ¡ÔñÖ§³Ö°ëÍ¸Ã÷Ä£Ê½,ÔÚÓĞsurfaceviewµÄactivityÖĞÊ¹ÓÃ¡£  
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.activity_camera_record);
 
@@ -104,9 +104,9 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
         loading.setVisibility(View.INVISIBLE);
 
         surfaceview = (SurfaceView) this.findViewById(R.id.surfaceview);
-        SurfaceHolder holder = surfaceview.getHolder();// å–å¾—holder
+        SurfaceHolder holder = surfaceview.getHolder();// È¡µÃholder
         holder.setKeepScreenOn(true);
-        holder.addCallback(this); // holderåŠ å…¥å›è°ƒæ¥å£
+        holder.addCallback(this); // holder¼ÓÈë»Øµ÷½Ó¿Ú
         // holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -120,33 +120,33 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start:
-                mediarecorder = new MediaRecorder();// åˆ›å»ºmediarecorderå¯¹è±¡
+                mediarecorder = new MediaRecorder();// ´´½¨mediarecorder¶ÔÏó
                 camera.release();
                 camera = null;
                 // mediarecorder.setCamera(camera);
-                // è®¾ç½®å½•åˆ¶è§†é¢‘æºä¸ºCamera(ç›¸æœº)
+                // ÉèÖÃÂ¼ÖÆÊÓÆµÔ´ÎªCamera(Ïà»ú)
                 mediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-                // è®¾ç½®å½•åˆ¶å®Œæˆåè§†é¢‘çš„å°è£…æ ¼å¼THREE_GPPä¸º3gp.MPEG_4ä¸ºmp4
+                // ÉèÖÃÂ¼ÖÆÍê³ÉºóÊÓÆµµÄ·â×°¸ñÊ½THREE_GPPÎª3gp.MPEG_4Îªmp4
                 mediarecorder
                         .setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-                // è®¾ç½®å½•åˆ¶çš„è§†é¢‘ç¼–ç h263 h264
+                // ÉèÖÃÂ¼ÖÆµÄÊÓÆµ±àÂëh263 h264
                 mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-                // è®¾ç½®è§†é¢‘å½•åˆ¶çš„åˆ†è¾¨ç‡ã€‚å¿…é¡»æ”¾åœ¨è®¾ç½®ç¼–ç å’Œæ ¼å¼çš„åé¢ï¼Œå¦åˆ™æŠ¥é”™
+                // ÉèÖÃÊÓÆµÂ¼ÖÆµÄ·Ö±æÂÊ¡£±ØĞë·ÅÔÚÉèÖÃ±àÂëºÍ¸ñÊ½µÄºóÃæ£¬·ñÔò±¨´í
                 mediarecorder.setVideoSize(176, 144);
                 mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
-                // è®¾ç½®è§†é¢‘æ–‡ä»¶è¾“å‡ºçš„è·¯å¾„
+                // ÉèÖÃÊÓÆµÎÄ¼şÊä³öµÄÂ·¾¶
                 mediarecorder.setOutputFile(path);
 
-                // å‡†å¤‡å½•åˆ¶
+                // ×¼±¸Â¼ÖÆ
                 try {
                     mediarecorder.prepare();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    // å¼€å§‹å½•åˆ¶
+                    // ¿ªÊ¼Â¼ÖÆ
                     mediarecorder.start();
                     canVisible_start = false;
                     start.setVisibility(View.GONE);
@@ -162,9 +162,9 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                             e.printStackTrace();
                         }
                         if (mediarecorder != null) {
-                            // åœæ­¢å½•åˆ¶
+                            // Í£Ö¹Â¼ÖÆ
                             mediarecorder.stop();
-                            // é‡Šæ”¾èµ„æº
+                            // ÊÍ·Å×ÊÔ´
                             mediarecorder.release();
                             mediarecorder = null;
                             Message msg = msgHandler.obtainMessage();
@@ -178,28 +178,28 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                 }
                 break;
             case R.id.retake_video:
-                mediarecorder = new MediaRecorder();// åˆ›å»ºmediarecorderå¯¹è±¡
+                mediarecorder = new MediaRecorder();// ´´½¨mediarecorder¶ÔÏó
                 //mediarecorder.setCamera(camera);
-                // è®¾ç½®å½•åˆ¶è§†é¢‘æºä¸ºCamera(ç›¸æœº)
+                // ÉèÖÃÂ¼ÖÆÊÓÆµÔ´ÎªCamera(Ïà»ú)
                 mediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-                // è®¾ç½®å½•åˆ¶å®Œæˆåè§†é¢‘çš„å°è£…æ ¼å¼THREE_GPPä¸º3gp.MPEG_4ä¸ºmp4
+                // ÉèÖÃÂ¼ÖÆÍê³ÉºóÊÓÆµµÄ·â×°¸ñÊ½THREE_GPPÎª3gp.MPEG_4Îªmp4
                 mediarecorder
                         .setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                // è®¾ç½®å½•åˆ¶çš„è§†é¢‘ç¼–ç h263 h264
+                // ÉèÖÃÂ¼ÖÆµÄÊÓÆµ±àÂëh263 h264
                 mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-                // è®¾ç½®è§†é¢‘å½•åˆ¶çš„åˆ†è¾¨ç‡ã€‚å¿…é¡»æ”¾åœ¨è®¾ç½®ç¼–ç å’Œæ ¼å¼çš„åé¢ï¼Œå¦åˆ™æŠ¥é”™
+                // ÉèÖÃÊÓÆµÂ¼ÖÆµÄ·Ö±æÂÊ¡£±ØĞë·ÅÔÚÉèÖÃ±àÂëºÍ¸ñÊ½µÄºóÃæ£¬·ñÔò±¨´í
                 mediarecorder.setVideoSize(176, 144);
                 mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
-                // è®¾ç½®è§†é¢‘æ–‡ä»¶è¾“å‡ºçš„è·¯å¾„
+                // ÉèÖÃÊÓÆµÎÄ¼şÊä³öµÄÂ·¾¶
                 mediarecorder.setOutputFile(path);
-                // å‡†å¤‡å½•åˆ¶
+                // ×¼±¸Â¼ÖÆ
                 try {
                     mediarecorder.prepare();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    // å¼€å§‹å½•åˆ¶
+                    // ¿ªÊ¼Â¼ÖÆ
                     mediarecorder.start();
                     retake.setVisibility(View.INVISIBLE);
                     upload.setVisibility(View.INVISIBLE);
@@ -215,9 +215,9 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                             e.printStackTrace();
                         }
                         if (mediarecorder != null) {
-                            // åœæ­¢å½•åˆ¶
+                            // Í£Ö¹Â¼ÖÆ
                             mediarecorder.stop();
-                            // é‡Šæ”¾èµ„æº
+                            // ÊÍ·Å×ÊÔ´
                             mediarecorder.release();
                             mediarecorder = null;
                             Message msg = msgHandler.obtainMessage();
@@ -287,13 +287,13 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                 case 2:
                     retake.setVisibility(View.VISIBLE);
                     upload.setVisibility(View.VISIBLE);
-                    time.setText("æ‹æ‘„ç»“æŸ");
+                    time.setText("ÅÄÉã½áÊø");
                     break;
                 case 3:
-                    Toast.makeText(context, "éªŒè¯å®Œæˆ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "ÑéÖ¤Íê³É", Toast.LENGTH_LONG).show();
                     break;
                 case 4:
-                    Toast.makeText(context, "ä¸Šä¼ å¤±è´¥", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "ÉÏ´«Ê§°Ü", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;
@@ -304,13 +304,13 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
-        // å°†holderï¼Œè¿™ä¸ªholderä¸ºå¼€å§‹åœ¨oncreaté‡Œé¢å–å¾—çš„holderï¼Œå°†å®ƒèµ‹ç»™surfaceHolder
+        // ½«holder£¬Õâ¸öholderÎª¿ªÊ¼ÔÚoncreatÀïÃæÈ¡µÃµÄholder£¬½«Ëü¸³¸øsurfaceHolder
         surfaceHolder = holder;
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // å°†holderï¼Œè¿™ä¸ªholderä¸ºå¼€å§‹åœ¨oncreaté‡Œé¢å–å¾—çš„holderï¼Œå°†å®ƒèµ‹ç»™surfaceHolder
+        // ½«holder£¬Õâ¸öholderÎª¿ªÊ¼ÔÚoncreatÀïÃæÈ¡µÃµÄholder£¬½«Ëü¸³¸øsurfaceHolder
         surfaceHolder = holder;
         try {
             if (camera == null) {
@@ -328,7 +328,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // surfaceDestroyedçš„æ—¶å€™åŒæ—¶å¯¹è±¡è®¾ç½®ä¸ºnull
+        // surfaceDestroyedµÄÊ±ºòÍ¬Ê±¶ÔÏóÉèÖÃÎªnull
         surfaceview = null;
         surfaceHolder = null;
         mediarecorder = null;
@@ -337,16 +337,16 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
     @Override
     public void onSensorChanged(SensorEvent event) {
         long currentUpdateTime = System.currentTimeMillis();
-        // ä¸¤æ¬¡æ£€æµ‹çš„æ—¶é—´é—´éš”
+        // Á½´Î¼ì²âµÄÊ±¼ä¼ä¸ô
         long timeInterval = currentUpdateTime - lastUpdateTime;
-        // åˆ¤æ–­æ˜¯å¦è¾¾åˆ°äº†æ£€æµ‹æ—¶é—´é—´éš”
+        // ÅĞ¶ÏÊÇ·ñ´ïµ½ÁË¼ì²âÊ±¼ä¼ä¸ô
         if (timeInterval < UPTATE_INTERVAL_TIME) {
             return;
         }
-        // ç°åœ¨çš„æ—¶é—´å˜æˆlastæ—¶é—´
+        // ÏÖÔÚµÄÊ±¼ä±ä³ÉlastÊ±¼ä
         lastUpdateTime = currentUpdateTime;
 
-        // è·å¾—x,y,zåæ ‡
+        // »ñµÃx,y,z×ø±ê
         float x = event.values[0];
         if (x > 9) {
             if (canVisible_start && !isVisible_start) {

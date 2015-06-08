@@ -2,7 +2,7 @@ package gtrj.shbz.util;
 
 
 public class ContextString {
-    public static final String SERVER ="http://192.168.3.112:8080/SHBZ/";
+    public static final String SERVER ="http://61.183.239.158:8888/SHBZ/";
     public static final String LOGIN="mlogcheck";
     public static final String INFOLIST="do/control/InsurerDo/mobileList";
     public static final String UPLOAD_PICTURE ="validAction";

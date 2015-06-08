@@ -122,7 +122,7 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
                     break;
                 case 2:
                     paths = new ArrayList<>();
-                    title.setText("æ­£åœ¨è·å–å›¾ç‰‡....");
+                    title.setText("ÕıÔÚ»ñÈ¡Í¼Æ¬....");
                     Thread thread1 = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -150,7 +150,7 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
                     break;
                 case 3:
                     int mr = (int) (Float.valueOf(matchRatio) * 100);
-                    title.setText("å½“å‰ä¸Šä¼ ç…§ç‰‡æ¯”å¯¹ç‡ä¸º " + mr + "%\n\n    ä»¥ä¸‹æ˜¯å¾€å¹´æ¯”å¯¹ç»“æœ");
+                    title.setText("µ±Ç°ÉÏ´«ÕÕÆ¬±È¶ÔÂÊÎª " + mr + "%\n\n    ÒÔÏÂÊÇÍùÄê±È¶Ô½á¹û");
                     loading.setVisibility(View.GONE);
                     buttonGroup.setVisibility(View.VISIBLE);
                     List<String> items = new ArrayList<>();
@@ -162,7 +162,7 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
                     pictureGroup.setAdapter(pagerAdapter);
                     break;
                 case 4:
-                    Toast.makeText(context, "æ¯”å¯¹è¶…æ—¶ï¼Œè¯·é‡è¯•", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "±È¶Ô³¬Ê±£¬ÇëÖØÊÔ", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -235,15 +235,15 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.next_step:
                 if (Float.valueOf(matchRatio) * 100 < 90) {
-                    new AlertDialog.Builder(this).setTitle("æç¤º")
+                    new AlertDialog.Builder(this).setTitle("ÌáÊ¾")
                             .setIconAttribute(android.R.attr.alertDialogIcon)
-                            .setMessage("åŒ¹é…ç‡å°äº90%ï¼Œç¡®å®šè¦è¿›å…¥ä¸‹ä¸€æ­¥å¼€å§‹è§†é¢‘æ‹æ‘„å—ï¼Ÿ")
-                            .setPositiveButton("ç¡®è®¤", (dialog, which) -> {
+                            .setMessage("Æ¥ÅäÂÊĞ¡ÓÚ90%£¬È·¶¨Òª½øÈëÏÂÒ»²½¿ªÊ¼ÊÓÆµÅÄÉãÂğ£¿")
+                            .setPositiveButton("È·ÈÏ", (dialog, which) -> {
                                 Intent intent1 = new Intent(context, CameraRecordActivity.class);
                                 intent1.putExtra("procedureNumber", procedureNumber);
                                 startActivity(intent1);
                             })
-                            .setNegativeButton("å–æ¶ˆ", null)
+                            .setNegativeButton("È¡Ïû", null)
                             .create().show();
                 } else {
                     Intent intent1 = new Intent(context, CameraRecordActivity.class);
