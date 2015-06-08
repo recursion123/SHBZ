@@ -11,8 +11,6 @@ import gtrj.shbz.R;
 
 public class AnimationActivity extends Activity {
 
-    private Handler mHandler;
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -22,14 +20,8 @@ public class AnimationActivity extends Activity {
     }
 
     public void initView() {
-        mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                goLoginActivity();
-            }
-        }, 3000);
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(() -> goLoginActivity(), 3000);
     }
 
     public void goLoginActivity() {

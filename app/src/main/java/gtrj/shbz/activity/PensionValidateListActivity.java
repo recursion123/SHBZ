@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -45,9 +44,6 @@ import gtrj.shbz.R;
 import gtrj.shbz.util.ContextString;
 import gtrj.shbz.util.HttpClientUtil;
 
-/**
- * Created by zhang77555 on 2015/5/12.
- */
 public class PensionValidateListActivity extends BaseActivity implements View.OnClickListener {
     private View all;
     private View undo;
@@ -57,8 +53,6 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
     private TextView doneText;
     private ListView infoList;
     private TextView pageNum;
-    private Button prePage;
-    private Button nextPage;
     private ProgressBarCircularIndeterminate loading;
 
     private List<Info> list;
@@ -77,6 +71,7 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
     private String validateId;
 
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,8 +89,8 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
         undo.setOnClickListener(this);
         done.setOnClickListener(this);
 
-        prePage = (Button) findViewById(R.id.pre_page);
-        nextPage = (Button) findViewById(R.id.next_page);
+        Button prePage = (Button) findViewById(R.id.pre_page);
+        Button nextPage = (Button) findViewById(R.id.next_page);
         prePage.setOnClickListener(this);
         nextPage.setOnClickListener(this);
 
@@ -103,35 +98,33 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
         infoListData = new ArrayList<>();
         adapter = new InfoListAdapter(this, infoListData);
         infoList.setAdapter(adapter);
-        infoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (adapter.list.get(position).checkable) {
-                    if (Environment.MEDIA_MOUNTED.equals(Environment
-                            .getExternalStorageState())) {
-                        File filedir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "SHBZ");
-                        if (!filedir.exists()) {
-                            filedir.mkdirs();
-                        }
-                        tempPic = new File(filedir.getPath() + File.separator + "temp.jpg");
-                        if (!tempPic.exists()) {
-                            try {
-                                tempPic.createNewFile();
-                            } catch (IOException e) {
-                            }
-                        }
-                        validateId = adapter.list.get(position).getId();
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                Uri.fromFile(tempPic));
-
-                        startActivityForResult(intent, 1);
-                    } else {
-                        Toast.makeText(view.getContext(), "SD卡不可用", Toast.LENGTH_SHORT).show();
+        infoList.setOnItemClickListener((parent, view, position, id1) -> {
+            if (adapter.list.get(position).checkable) {
+                if (Environment.MEDIA_MOUNTED.equals(Environment
+                        .getExternalStorageState())) {
+                    File filedir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "SHBZ");
+                    if (!filedir.exists()) {
+                        filedir.mkdirs();
                     }
+                    tempPic = new File(filedir.getPath() + File.separator + "temp.jpg");
+                    if (!tempPic.exists()) {
+                        try {
+                            tempPic.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    validateId = adapter.list.get(position).getId();
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(tempPic));
+
+                    startActivityForResult(intent, 1);
                 } else {
-                    Toast.makeText(view.getContext(), "该用户已被验证", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "SD卡不可用", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(view.getContext(), "该用户已被验证", Toast.LENGTH_SHORT).show();
             }
         });
         handleIntent(getIntent());
@@ -376,7 +369,7 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            InfoViewHolder infoViewHolder = null;
+            InfoViewHolder infoViewHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.info_list_item, null);
                 infoViewHolder = new InfoViewHolder(convertView);

@@ -1,8 +1,6 @@
 package gtrj.shbz.util;
 
-/**
- * Created by zhang77555 on 2015/5/12.
- */
+
 public class ContextString {
     public static final String SERVER ="http://192.168.3.112:8080/SHBZ/";
     public static final String LOGIN="mlogcheck";

@@ -36,17 +36,11 @@ import gtrj.shbz.R;
 import gtrj.shbz.util.ContextString;
 import gtrj.shbz.util.HttpClientUtil;
 
-/**
- * Created by zhang77555 on 2015/5/18.
- */
 public class ValidateResultActivity extends BaseActivity implements View.OnClickListener {
     private String procedureNumber;
     private String path;
     private String id;
 
-    private Button noPass;
-    private Button nextStep;
-    private Button retake;
     private GalleryViewPager pictureGroup;
     private LinearLayout buttonGroup;
     private TextView title;
@@ -73,11 +67,11 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
 
         loading = (ProgressBarCircularIndeterminate) findViewById(R.id.loading);
         title = (TextView) findViewById(R.id.title);
-        noPass = (Button) findViewById(R.id.no_pass);
+        Button noPass = (Button) findViewById(R.id.no_pass);
         noPass.setOnClickListener(this);
-        nextStep = (Button) findViewById(R.id.next_step);
+        Button nextStep = (Button) findViewById(R.id.next_step);
         nextStep.setOnClickListener(this);
-        retake = (Button) findViewById(R.id.result_retake);
+        Button retake = (Button) findViewById(R.id.result_retake);
         retake.setOnClickListener(this);
         buttonGroup = (LinearLayout) findViewById(R.id.button_group);
         buttonGroup.setVisibility(View.INVISIBLE);
@@ -176,6 +170,7 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
         }
     };
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private String getPicture(String procedureNumber, String order) {
         Map<String, String> map = new HashMap<>();
         map.put("procedureNumber", procedureNumber);
@@ -190,7 +185,7 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
                 }
                 FileOutputStream fileOut = new FileOutputStream(temFile);
                 byte[] buffer = new byte[1024 * 8];
-                for (int j = 0; (j = result.read(buffer)) != -1; ) {
+                for (int j; (j = result.read(buffer)) != -1; ) {
                     fileOut.write(buffer, 0, j);
                 }
                 fileOut.flush();
@@ -243,13 +238,10 @@ public class ValidateResultActivity extends BaseActivity implements View.OnClick
                     new AlertDialog.Builder(this).setTitle("提示")
                             .setIconAttribute(android.R.attr.alertDialogIcon)
                             .setMessage("匹配率小于90%，确定要进入下一步开始视频拍摄吗？")
-                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent1 = new Intent(context, CameraRecordActivity.class);
-                                    intent1.putExtra("procedureNumber", procedureNumber);
-                                    startActivity(intent1);
-                                }
+                            .setPositiveButton("确认", (dialog, which) -> {
+                                Intent intent1 = new Intent(context, CameraRecordActivity.class);
+                                intent1.putExtra("procedureNumber", procedureNumber);
+                                startActivity(intent1);
                             })
                             .setNegativeButton("取消", null)
                             .create().show();

@@ -42,6 +42,7 @@ import gtrj.shbz.util.ContextString;
 import gtrj.shbz.util.HttpClientUtil;
 
 
+@SuppressWarnings("deprecation")
 public class CameraRecordActivity extends Activity implements SurfaceHolder.Callback, OnClickListener, SensorEventListener {
     private Button start;// 开始录制按钮
     private Button retake;
@@ -61,9 +62,6 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
 
     int windowHeight;
     int windowWidth;
-
-    private SensorManager sensorManager;
-    private Sensor sensor;
 
     // 两次检测的时间间隔
     private static final int UPTATE_INTERVAL_TIME = 200;
@@ -111,8 +109,8 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
         holder.addCallback(this); // holder加入回调接口
         // holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
@@ -152,29 +150,26 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                     mediarecorder.start();
                     canVisible_start = false;
                     start.setVisibility(View.GONE);
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                for (i = 5; i >= 1; i--) {
-                                    Message msg = msgHandler.obtainMessage();
-                                    msg.arg1 = 1;
-                                    msgHandler.sendMessage(msg);
-                                    Thread.sleep(1000);
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            if (mediarecorder != null) {
-                                // 停止录制
-                                mediarecorder.stop();
-                                // 释放资源
-                                mediarecorder.release();
-                                mediarecorder = null;
+                    Thread thread = new Thread(() -> {
+                        try {
+                            for (i = 5; i >= 1; i--) {
                                 Message msg = msgHandler.obtainMessage();
-                                msg.arg1 = 2;
+                                msg.arg1 = 1;
                                 msgHandler.sendMessage(msg);
+                                Thread.sleep(1000);
                             }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (mediarecorder != null) {
+                            // 停止录制
+                            mediarecorder.stop();
+                            // 释放资源
+                            mediarecorder.release();
+                            mediarecorder = null;
+                            Message msg = msgHandler.obtainMessage();
+                            msg.arg1 = 2;
+                            msgHandler.sendMessage(msg);
                         }
                     });
                     thread.start();
@@ -208,29 +203,26 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                     mediarecorder.start();
                     retake.setVisibility(View.INVISIBLE);
                     upload.setVisibility(View.INVISIBLE);
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                for (i = 5; i >= 1; i--) {
-                                    Message msg = msgHandler.obtainMessage();
-                                    msg.arg1 = 1;
-                                    msgHandler.sendMessage(msg);
-                                    Thread.sleep(1000);
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            if (mediarecorder != null) {
-                                // 停止录制
-                                mediarecorder.stop();
-                                // 释放资源
-                                mediarecorder.release();
-                                mediarecorder = null;
+                    Thread thread = new Thread(() -> {
+                        try {
+                            for (i = 5; i >= 1; i--) {
                                 Message msg = msgHandler.obtainMessage();
-                                msg.arg1 = 2;
+                                msg.arg1 = 1;
                                 msgHandler.sendMessage(msg);
+                                Thread.sleep(1000);
                             }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (mediarecorder != null) {
+                            // 停止录制
+                            mediarecorder.stop();
+                            // 释放资源
+                            mediarecorder.release();
+                            mediarecorder = null;
+                            Message msg = msgHandler.obtainMessage();
+                            msg.arg1 = 2;
+                            msgHandler.sendMessage(msg);
                         }
                     });
                     thread.start();
@@ -242,28 +234,25 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                 loading.setVisibility(View.VISIBLE);
                 retake.setClickable(false);
                 upload.setClickable(false);
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String result = uploadVideo();
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<Map<String, String>>() {
-                        }.getType();
-                        Map<String, String> resultMap = gson.fromJson(result, type);
-                        if (resultMap != null && resultMap.get("isSave") != null && resultMap.get("isSave").equals("0")) {
-                            Message msg = msgHandler.obtainMessage();
-                            msg.arg1 = 3;
-                            msgHandler.sendMessage(msg);
-                            Intent intent = new Intent(context, PensionValidateListActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("finish","1");
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Message msg = msgHandler.obtainMessage();
-                            msg.arg1 = 4;
-                            msgHandler.sendMessage(msg);
-                        }
+                Thread thread = new Thread(() -> {
+                    String result = uploadVideo();
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<Map<String, String>>() {
+                    }.getType();
+                    Map<String, String> resultMap = gson.fromJson(result, type);
+                    if (resultMap != null && resultMap.get("isSave") != null && resultMap.get("isSave").equals("0")) {
+                        Message msg = msgHandler.obtainMessage();
+                        msg.arg1 = 3;
+                        msgHandler.sendMessage(msg);
+                        Intent intent = new Intent(context, PensionValidateListActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("finish","1");
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Message msg = msgHandler.obtainMessage();
+                        msg.arg1 = 4;
+                        msgHandler.sendMessage(msg);
                     }
                 });
                 thread.start();
@@ -277,8 +266,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
         try {
             Map<String, String> map = new HashMap<>();
             map.put("procedureNumber", procedureNumber);
-            String result = HttpClientUtil.multipartRequest(ContextString.UPLOAD_VIDEO, map, path, "videoData", "video/mp4");
-            return result;
+            return HttpClientUtil.multipartRequest(ContextString.UPLOAD_VIDEO, map, path, "videoData", "video/mp4");
         } catch (HttpClientUtil.SessionOutOfTimeException e) {
             e.printStackTrace();
             Intent intent = new Intent(this, LoginActivity.class);

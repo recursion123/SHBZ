@@ -2,12 +2,12 @@ package gtrj.shbz.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -55,28 +55,22 @@ public class LoginActivity extends Activity {
         password = (BootstrapEditText) findViewById(R.id.password);
 
         loginBtn = (BootstrapButton) findViewById(R.id.loginBtn);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editable(false);
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean loginSuccess = loginSuccess();
-                        if (loginSuccess) {
-                            Intent intent = new Intent();
-                            intent.setClass(loginContext, MainActivity.class);
-                            startActivity(intent);
-                            loginContext.finish();
-                        } else {
-                            Message msg = msgHandler.obtainMessage();
-                            msg.arg1 = 1;
-                            msgHandler.sendMessage(msg);
-                        }
-                    }
-                });
-                t.start();
-            }
+        loginBtn.setOnClickListener(v -> {
+            editable(false);
+            Thread t = new Thread(() -> {
+                boolean loginSuccess = loginSuccess();
+                if (loginSuccess) {
+                    Intent intent = new Intent();
+                    intent.setClass(loginContext, MainActivity.class);
+                    startActivity(intent);
+                    loginContext.finish();
+                } else {
+                    Message msg = msgHandler.obtainMessage();
+                    msg.arg1 = 1;
+                    msgHandler.sendMessage(msg);
+                }
+            });
+            t.start();
         });
         String isSessionOutOfTime = getIntent().getStringExtra("isSessionOutOfTime");
         if (isSessionOutOfTime != null && "1".equals(isSessionOutOfTime)) {
@@ -111,7 +105,7 @@ public class LoginActivity extends Activity {
                 SharedPreferences preferences = getSharedPreferences("SHBZ", 0);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("userName", username.getText().toString());
-                editor.commit();
+                editor.apply();
                 return true;
             }
         } catch (Exception e) {
@@ -132,21 +126,19 @@ public class LoginActivity extends Activity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             // 监控返回键
             new AlertDialog.Builder(this).setTitle("提示")
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setMessage("确定要退出吗?")
-                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(Intent.ACTION_MAIN);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addCategory(Intent.CATEGORY_HOME);
-                            startActivity(intent);
-                            finish();
-                        }})
+                    .setPositiveButton("确认", (dialog, which) -> {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(intent);
+                        finish();
+                    })
                     .setNegativeButton("取消", null)
                     .create().show();
             return false;

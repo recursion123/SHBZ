@@ -1,13 +1,8 @@
 package gtrj.shbz.util;
 
-/**
- * Created by zhang77555 on 2015/5/12.
- */
-
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +16,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +58,7 @@ public class HttpClientUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert response != null;
         HttpEntity entity = response.getEntity();
         if (ContextString.SESSION == null) {
             CookieStore mCookieStore = ((DefaultHttpClient) httpClient).getCookieStore();
@@ -101,14 +96,14 @@ public class HttpClientUtil {
             if (br != null)
                 try {
                     br.close();
-                } catch (Exception fe) {
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
         }
     }
 
     public static InputStream getImage(String method, Map<String, String> params) {
-        HttpURLConnection conn = null;
+        HttpURLConnection conn;
         try {
             StringBuilder entity = new StringBuilder();
             if (params != null) {
@@ -144,8 +139,7 @@ public class HttpClientUtil {
                 if (conn.getResponseCode() != 200) {
                     return null;
                 } else {
-                    InputStream inputStream = conn.getInputStream();
-                    return inputStream;
+                    return conn.getInputStream();
                 }
             }
         } catch (Exception e) {
@@ -156,19 +150,19 @@ public class HttpClientUtil {
 
     public static String multipartRequest(String method, Map<String, String> parmas, String filepath, String filefield, String fileMimeType) throws SessionOutOfTimeException {
         Log.e("开始上传","alalalla");
-        HttpURLConnection connection = null;
-        DataOutputStream outputStream = null;
-        InputStream inputStream = null;
+        HttpURLConnection connection;
+        DataOutputStream outputStream;
+        InputStream inputStream;
 
         String twoHyphens = "--";
         String boundary = "*****" + Long.toString(System.currentTimeMillis()) + "*****";
         String lineEnd = "\r\n";
 
-        String result = "";
+        String result;
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
+        int maxBufferSize = 1024 * 1024;
 
         String[] q = filepath.split("/");
         int idx = q.length - 1;
@@ -213,9 +207,7 @@ public class HttpClientUtil {
             outputStream.writeBytes(lineEnd);
 
             // Upload POST Data
-            Iterator<String> keys = parmas.keySet().iterator();
-            while (keys.hasNext()) {
-                String key = keys.next();
+            for (String key : parmas.keySet()) {
                 String value = parmas.get(key);
 
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
@@ -252,7 +244,7 @@ public class HttpClientUtil {
     private static String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
-        String line = null;
+        String line;
         try {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);

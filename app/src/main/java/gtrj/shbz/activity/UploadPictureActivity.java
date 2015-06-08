@@ -26,9 +26,6 @@ import gtrj.shbz.R;
 import gtrj.shbz.util.ContextString;
 import gtrj.shbz.util.HttpClientUtil;
 
-/**
- * Created by zhang77555 on 2015/5/13.
- */
 public class UploadPictureActivity extends BaseActivity {
     private ImageView imageView;
     private Button upload;
@@ -52,31 +49,20 @@ public class UploadPictureActivity extends BaseActivity {
         imageView.setImageBitmap(bitmap);
 
         upload = (Button) findViewById(R.id.upload);
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loading.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
-                upload.setVisibility(View.GONE);
-                retake.setVisibility(View.GONE);
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        upload();
-                    }
-                });
-                thread.start();
-            }
+        upload.setOnClickListener(v -> {
+            loading.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+            upload.setVisibility(View.GONE);
+            retake.setVisibility(View.GONE);
+            Thread thread = new Thread(this::upload);
+            thread.start();
         });
         retake = (Button) findViewById(R.id.retake);
-        retake.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(new File(path)));
-                startActivityForResult(intent, 1);
-            }
+        retake.setOnClickListener(v -> {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                    Uri.fromFile(new File(path)));
+            startActivityForResult(intent, 1);
         });
         loading.setVisibility(View.GONE);
     }

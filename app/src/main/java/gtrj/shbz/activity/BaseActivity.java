@@ -9,15 +9,13 @@ import android.view.MenuItem;
 
 import gtrj.shbz.R;
 
-/**
- * Created by zhang77555 on 2015/5/13.
- */
 public abstract class BaseActivity extends Activity {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_color));

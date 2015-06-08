@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
@@ -37,64 +36,44 @@ public class MainActivity extends Activity {
 
         setOriginRiple(layoutRipple);
 
-        layoutRipple.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent intent = new Intent(context, PensionValidateListActivity.class);
-                startActivity(intent);
-            }
+        layoutRipple.setOnClickListener(arg0 -> {
+            Intent intent = new Intent(context, PensionValidateListActivity.class);
+            startActivity(intent);
         });
         layoutRipple = (LayoutRipple) findViewById(R.id.medical_validate);
 
 
         setOriginRiple(layoutRipple);
 
-        layoutRipple.setOnClickListener(new OnClickListener() {
+        layoutRipple.setOnClickListener(arg0 -> {
 
-            @Override
-            public void onClick(View arg0) {
-
-            }
         });
         layoutRipple = (LayoutRipple) findViewById(R.id.policy_release);
 
 
         setOriginRiple(layoutRipple);
 
-        layoutRipple.setOnClickListener(new OnClickListener() {
+        layoutRipple.setOnClickListener(arg0 -> {
 
-            @Override
-            public void onClick(View arg0) {
-
-            }
         });
         layoutRipple = (LayoutRipple) findViewById(R.id.latest_policy);
 
 
         setOriginRiple(layoutRipple);
 
-        layoutRipple.setOnClickListener(new OnClickListener() {
+        layoutRipple.setOnClickListener(arg0 -> {
 
-            @Override
-            public void onClick(View arg0) {
-
-            }
         });
     }
 
     private void setOriginRiple(final LayoutRipple layoutRipple) {
 
-        layoutRipple.post(new Runnable() {
-
-            @Override
-            public void run() {
-                View v = layoutRipple.getChildAt(0);
-                layoutRipple.setxRippleOrigin(ViewHelper.getX(v) + v.getWidth() / 2);
-                layoutRipple.setyRippleOrigin(ViewHelper.getY(v) + v.getHeight() / 2);
-                layoutRipple.setRippleColor(backgroundColor);
-                layoutRipple.setRippleSpeed(40);
-            }
+        layoutRipple.post(() -> {
+            View v = layoutRipple.getChildAt(0);
+            layoutRipple.setxRippleOrigin(ViewHelper.getX(v) + v.getWidth() / 2);
+            layoutRipple.setyRippleOrigin(ViewHelper.getY(v) + v.getHeight() / 2);
+            layoutRipple.setRippleColor(backgroundColor);
+            layoutRipple.setRippleSpeed(40);
         });
 
     }
