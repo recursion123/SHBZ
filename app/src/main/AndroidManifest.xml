@@ -29,7 +29,7 @@
         <activity
             android:name="gtrj.shbz.activity.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name="gtrj.shbz.activity.PensionValidateListActivity"

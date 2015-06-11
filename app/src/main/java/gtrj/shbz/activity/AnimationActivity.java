@@ -16,12 +16,8 @@ public class AnimationActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_animation);
 
-        initView();
-    }
-
-    public void initView() {
         Handler mHandler = new Handler();
-        mHandler.postDelayed(() -> goLoginActivity(), 3000);
+        mHandler.postDelayed(this::goLoginActivity, 3000);
     }
 
     public void goLoginActivity() {

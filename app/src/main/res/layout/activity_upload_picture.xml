@@ -14,6 +14,7 @@
         android:background="@color/apptheme_primary" />
     <ImageView
         android:id="@+id/photo"
+        android:fitsSystemWindows="true"
         android:layout_width="350dp"
         android:layout_height="350dp" />
 

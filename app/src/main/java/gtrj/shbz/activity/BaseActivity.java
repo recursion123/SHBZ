@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import gtrj.shbz.R;
 
 public abstract class BaseActivity extends Activity {
@@ -19,6 +21,7 @@ public abstract class BaseActivity extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_color));
+        initSystemBar();
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -29,5 +32,13 @@ public abstract class BaseActivity extends Activity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initSystemBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.apptheme_primary);
+        }
     }
 }
