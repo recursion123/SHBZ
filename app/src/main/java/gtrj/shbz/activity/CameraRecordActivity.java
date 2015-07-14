@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +18,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -72,6 +75,11 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
     private boolean isVisible_start = true;//保存start按钮的显示状态
     private boolean canVisible_start = true;//判断start按钮能否显示
 
+    private SoundPool soundPool;
+
+    private int maxTime = 10;
+    private int soundNum = 3;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉标题栏  
@@ -113,19 +121,40 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
+
+
+        int[][] sounds = new int[][]{{R.raw.sound,R.raw.sound_end}, {R.raw.sound2,R.raw.sound2_end}, {R.raw.sound3,R.raw.sound3_end}};
+
+        if (sounds.length >= soundNum) {
+            int max = 3;
+           // int min = 0;
+            int action1=new Random().nextInt(100)%max;
+            soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
+            soundPool.load(this, sounds[action1][0], 1);
+            soundPool.load(this, sounds[action1][1], 2);
+            int action2=new Random().nextInt(100)%max;
+            soundPool.load(this, sounds[action2][0], 3);//new Random().nextInt(max)%(max-min+1) + min
+        }
     }
 
+    private void playSound() {
+        msgHandler.postDelayed(() -> soundPool.play(1, 1, 1, 0, 0, 1), 0);
+        msgHandler.postDelayed(() -> soundPool.play(2, 1, 1, 0, 0, 1), 4000);
+        msgHandler.postDelayed(() -> soundPool.play(3, 1, 1, 0, 0, 1), 7000);
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start:
+                playSound();
                 mediarecorder = new MediaRecorder();// 创建mediarecorder对象
                 camera.release();
                 camera = null;
                 // mediarecorder.setCamera(camera);
                 // 设置录制视频源为Camera(相机)
                 mediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+                mediarecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 
                 // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
                 mediarecorder
@@ -133,6 +162,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
 
                 // 设置录制的视频编码h263 h264
                 mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+                mediarecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                 // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
                 mediarecorder.setVideoSize(176, 144);
                 mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
@@ -152,7 +182,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                     start.setVisibility(View.GONE);
                     Thread thread = new Thread(() -> {
                         try {
-                            for (i = 5; i >= 1; i--) {
+                            for (i = maxTime; i >= 1; i--) {
                                 Message msg = msgHandler.obtainMessage();
                                 msg.arg1 = 1;
                                 msgHandler.sendMessage(msg);
@@ -178,15 +208,18 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                 }
                 break;
             case R.id.retake_video:
+                playSound();
                 mediarecorder = new MediaRecorder();// 创建mediarecorder对象
                 //mediarecorder.setCamera(camera);
                 // 设置录制视频源为Camera(相机)
                 mediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+                mediarecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
                 // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
                 mediarecorder
                         .setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                 // 设置录制的视频编码h263 h264
                 mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+                mediarecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                 // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
                 mediarecorder.setVideoSize(176, 144);
                 mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
@@ -205,7 +238,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                     upload.setVisibility(View.INVISIBLE);
                     Thread thread = new Thread(() -> {
                         try {
-                            for (i = 5; i >= 1; i--) {
+                            for (i = maxTime; i >= 1; i--) {
                                 Message msg = msgHandler.obtainMessage();
                                 msg.arg1 = 1;
                                 msgHandler.sendMessage(msg);
@@ -246,7 +279,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                         msgHandler.sendMessage(msg);
                         Intent intent = new Intent(context, PensionValidateListActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("finish","1");
+                        intent.putExtra("finish", "1");
                         startActivity(intent);
                         finish();
                     } else {
