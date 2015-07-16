@@ -123,18 +123,22 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
                 SensorManager.SENSOR_DELAY_NORMAL);
 
 
-        int[][] sounds = new int[][]{{R.raw.sound,R.raw.sound_end}, {R.raw.sound2,R.raw.sound2_end}, {R.raw.sound3,R.raw.sound3_end}};
+        int[][] sounds = new int[][]{{R.raw.sound, R.raw.sound_end}, {R.raw.sound2, R.raw.sound2_end}, {R.raw.sound3, R.raw.sound3_end}, {R.raw.sound4},
+                {R.raw.sound5}, {R.raw.sound6}, {R.raw.sound7}, {R.raw.sound8, R.raw.sound8_end}, {R.raw.sound9, R.raw.sound9_end},};
 
-        if (sounds.length >= soundNum) {
-            int max = 3;
-           // int min = 0;
-            int action1=new Random().nextInt(100)%max;
-            soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
-            soundPool.load(this, sounds[action1][0], 1);
-            soundPool.load(this, sounds[action1][1], 2);
-            int action2=new Random().nextInt(100)%max;
-            soundPool.load(this, sounds[action2][0], 3);//new Random().nextInt(max)%(max-min+1) + min
+
+        soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
+        for (int i = 0; i < soundNum; i++) {
+            int action = new Random().nextInt(100) % sounds.length;
+            if (sounds[action].length > 1 && i < 2) {
+                soundPool.load(this, sounds[action][0], i + 1);
+                soundPool.load(this, sounds[action][1], i + 2);
+                i++;
+            } else {
+                soundPool.load(this, sounds[action][0], i + 1);
+            }
         }
+
     }
 
     private void playSound() {
