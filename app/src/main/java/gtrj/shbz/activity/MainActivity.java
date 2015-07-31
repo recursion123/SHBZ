@@ -1,10 +1,13 @@
 package gtrj.shbz.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
@@ -76,5 +79,26 @@ public class MainActivity extends Activity {
             layoutRipple.setRippleSpeed(40);
         });
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 监控返回键
+            new AlertDialog.Builder(this).setTitle("提示")
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setMessage("确定要退出吗?")
+                    .setPositiveButton("确认", (dialog, which) -> {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .setNegativeButton("取消", null)
+                    .create().show();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

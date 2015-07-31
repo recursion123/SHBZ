@@ -32,8 +32,6 @@ import org.apache.http.message.BasicNameValuePair;
 public class HttpClientUtil {
 
     public static String getData(String method, Map<String, String> param) throws SessionOutOfTimeException {
-
-
         List<BasicNameValuePair> nvps = new ArrayList<>();
         for (Map.Entry<String, String> entry : param.entrySet()) {
             BasicNameValuePair nv = new BasicNameValuePair(entry.getKey(), entry.getValue());
@@ -73,9 +71,6 @@ public class HttpClientUtil {
                 }
             }
         }
-        System.out.println("we got from  server.. ");
-        System.out.println(response.getStatusLine());
-
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(entity.getContent()));

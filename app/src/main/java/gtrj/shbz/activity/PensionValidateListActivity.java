@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,15 +41,13 @@ import java.util.Map;
 
 import gtrj.shbz.R;
 import gtrj.shbz.util.ContextString;
-import gtrj.shbz.util.HttpClientUtil;
+import gtrj.shbz.util.OkHttpUtil;
+import gtrj.shbz.view.zTextView;
 
 public class PensionValidateListActivity extends BaseActivity implements View.OnClickListener {
-    private View all;
-    private View undo;
-    private View done;
-    private TextView allText;
-    private TextView undoText;
-    private TextView doneText;
+    private zTextView all;
+    private zTextView undo;
+    private zTextView done;
     private ListView infoList;
     private TextView pageNum;
     private ProgressBarCircularIndeterminate loading;
@@ -79,14 +76,12 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
         loading = (ProgressBarCircularIndeterminate) findViewById(R.id.loading);
         pageNum = (TextView) findViewById(R.id.page_num);
 
-        all = findViewById(R.id.all_layout);
-        undo = findViewById(R.id.undo_layout);
-        done = findViewById(R.id.done_layout);
-        allText = (TextView) findViewById(R.id.all_text);
-        undoText = (TextView) findViewById(R.id.undo_text);
-        doneText = (TextView) findViewById(R.id.done_text);
+        all = (zTextView)findViewById(R.id.all);
+        undo =(zTextView) findViewById(R.id.undo);
+        done = (zTextView)findViewById(R.id.done);
         all.setOnClickListener(this);
         undo.setOnClickListener(this);
+        undo.click(true);
         done.setOnClickListener(this);
 
         Button prePage = (Button) findViewById(R.id.pre_page);
@@ -198,17 +193,17 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
             return;
         }
         switch (v.getId()) {
-            case R.id.all_layout:
+            case R.id.all:
                 clearSelection();
-                setSelection(R.id.all_layout);
+                setSelection(R.id.all);
                 break;
-            case R.id.undo_layout:
+            case R.id.undo:
                 clearSelection();
-                setSelection(R.id.undo_layout);
+                setSelection(R.id.undo);
                 break;
-            case R.id.done_layout:
+            case R.id.done:
                 clearSelection();
-                setSelection(R.id.done_layout);
+                setSelection(R.id.done);
                 break;
             case R.id.pre_page:
                 changePage(R.id.pre_page);
@@ -243,37 +238,29 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setSelection(int viewId) {
-        Drawable drawable = this.getResources().getDrawable(R.drawable.bg_border_select);
-        if (viewId == R.id.all_layout) {
-            all.setBackground(drawable);
-            allText.setTextColor(Color.parseColor("#FFFFFF"));
+        if (viewId == R.id.all) {
             dataType = "";
             page = 1;
+            all.click(true);
             sendMessage();
-        } else if (viewId == R.id.undo_layout) {
-            undo.setBackground(drawable);
-            undoText.setTextColor(Color.parseColor("#FFFFFF"));
+        } else if (viewId == R.id.undo) {
             dataType = "2";
             page = 1;
+            undo.click(true);
             sendMessage();
         } else {
-            done.setBackgroundColor(Color.parseColor("#00796b"));
-            doneText.setTextColor(Color.parseColor("#FFFFFF"));
             dataType = "1";
             page = 1;
+            done.click(true);
             sendMessage();
         }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void clearSelection() {
-        Drawable drawable = this.getResources().getDrawable(R.drawable.bg_border);
-        all.setBackground(drawable);
-        allText.setTextColor(Color.parseColor("#82858b"));
-        undo.setBackground(drawable);
-        undoText.setTextColor(Color.parseColor("#82858b"));
-        done.setBackgroundColor(Color.parseColor("#ffffff"));
-        doneText.setTextColor(Color.parseColor("#82858b"));
+        all.click(false);
+        undo.click(false);
+        done.click(false);
     }
 
     private Infos getData(String username, String requestType, String id) {
@@ -284,7 +271,9 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
         map.put("rows", String.valueOf(rows));
         map.put("page", String.valueOf(page));
         try {
-            String result = HttpClientUtil.getData(ContextString.INFOLIST, map);
+            //String result = HttpClientUtil.getData(ContextString.INFOLIST, map);
+            //¸ÄÓÃokhttp
+            String result= OkHttpUtil.Post(ContextString.INFOLIST, map);
             Gson gson = new Gson();
             Type type = new TypeToken<Infos>() {
             }.getType();
@@ -292,13 +281,15 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
             if (infos != null && infos.getTotal() != 0) {
                 return infos;
             }
-        } catch (HttpClientUtil.SessionOutOfTimeException e) {
+        } catch (OkHttpUtil.SessionOutOfTimeException e) {
             e.printStackTrace();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.putExtra("isSessionOutOfTime", "1");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             this.finish();
+        }catch (IOException e){
+            e.printStackTrace();
         }
         return null;
     }

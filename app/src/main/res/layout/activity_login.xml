@@ -55,4 +55,15 @@
         android:layout_height="32dp"
         android:layout_centerInParent="true"
         android:background="@color/apptheme_primary" />
+    <com.beardedhen.androidbootstrap.BootstrapEditText
+        android:id="@+id/ip_address"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="ip地址"
+        android:text="61.183.239.158:8888"
+        android:singleLine="true"
+        bootstrapbutton:be_roundedCorners="true"
+        bootstrapbutton:be_state="success"
+        android:gravity="left" />
 </LinearLayout>

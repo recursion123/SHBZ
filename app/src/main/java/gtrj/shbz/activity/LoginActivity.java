@@ -1,14 +1,11 @@
 package gtrj.shbz.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -26,7 +23,7 @@ import java.util.Map;
 
 import gtrj.shbz.R;
 import gtrj.shbz.util.ContextString;
-import gtrj.shbz.util.HttpClientUtil;
+import gtrj.shbz.util.OkHttpUtil;
 
 
 public class LoginActivity extends Activity {
@@ -36,6 +33,10 @@ public class LoginActivity extends Activity {
     private BootstrapButton loginBtn;
     private ProgressBarCircularIndeterminate loading;
     private Activity loginContext;
+
+    private BootstrapEditText ipAddress;
+    SharedPreferences preferences;
+    private String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,23 @@ public class LoginActivity extends Activity {
         username = (BootstrapEditText) findViewById(R.id.username);
         password = (BootstrapEditText) findViewById(R.id.password);
 
+        //配置IP地址
+        ipAddress = (BootstrapEditText) findViewById(R.id.ip_address);
+        preferences = getSharedPreferences("SHBZ", 0);
+        s = preferences.getString("ipAddress", "");
+        ipAddress.setText(s);
+
         loginBtn = (BootstrapButton) findViewById(R.id.loginBtn);
         loginBtn.setOnClickListener(v -> {
             editable(false);
             Thread t = new Thread(() -> {
                 boolean loginSuccess = loginSuccess();
                 if (loginSuccess) {
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("ipAddress", ipAddress.getText().toString());
+                    editor.commit();
+
                     Intent intent = new Intent();
                     intent.setClass(loginContext, MainActivity.class);
                     startActivity(intent);
@@ -85,6 +97,10 @@ public class LoginActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "登录失败，账户或密码错误", Toast.LENGTH_SHORT).show();
                     editable(true);
                     break;
+                case 3:
+                    Toast.makeText(getApplicationContext(), "请配置IP地址", Toast.LENGTH_SHORT).show();
+                    editable(true);
+                    break;
                 default:
                     break;
             }
@@ -92,11 +108,22 @@ public class LoginActivity extends Activity {
     };
 
     private boolean loginSuccess() {
+        if (!ipAddress.getText().toString().equals("")) {
+            ContextString.SERVER = "http://" + ipAddress.getText().toString() + "/SHBZ/";
+        } else {
+            Message msg = msgHandler.obtainMessage();
+            msg.arg1 = 3;
+            msgHandler.sendMessage(msg);
+            return false;
+        }
+
         Map<String, String> map = new HashMap<>();
         map.put("userName", username.getText().toString());
         map.put("userPwd", password.getText().toString());
         try {
-            String result = HttpClientUtil.getData(ContextString.LOGIN, map);
+            //String result = HttpClientUtil.getData(ContextString.LOGIN, map);
+            //改用okhttp
+            String result = OkHttpUtil.Post(ContextString.LOGIN, map);
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, String>>() {
             }.getType();
@@ -125,24 +152,4 @@ public class LoginActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK) {
-            // 监控返回键
-            new AlertDialog.Builder(this).setTitle("提示")
-                    .setIconAttribute(android.R.attr.alertDialogIcon)
-                    .setMessage("确定要退出吗?")
-                    .setPositiveButton("确认", (dialog, which) -> {
-                        Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addCategory(Intent.CATEGORY_HOME);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .setNegativeButton("取消", null)
-                    .create().show();
-            return false;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 }
