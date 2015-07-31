@@ -78,7 +78,6 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
     private SoundPool soundPool;
 
     private int maxTime = 10;
-    private int soundNum = 3;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +127,7 @@ public class CameraRecordActivity extends Activity implements SurfaceHolder.Call
 
 
         soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
+        int soundNum = 3;
         for (int i = 0; i < soundNum; i++) {
             int action = new Random().nextInt(100) % sounds.length;
             if (sounds[action].length > 1 && i < 2) {

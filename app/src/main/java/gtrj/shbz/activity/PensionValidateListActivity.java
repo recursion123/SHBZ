@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +42,8 @@ import gtrj.shbz.R;
 import gtrj.shbz.util.ContextString;
 import gtrj.shbz.util.OkHttpUtil;
 import gtrj.shbz.view.zTextView;
+
+import static android.view.LayoutInflater.*;
 
 public class PensionValidateListActivity extends BaseActivity implements View.OnClickListener {
     private zTextView all;
@@ -359,7 +360,7 @@ public class PensionValidateListActivity extends BaseActivity implements View.On
         public View getView(int position, View convertView, ViewGroup parent) {
             InfoViewHolder infoViewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.info_list_item, null);
+                convertView = from(context).inflate(R.layout.info_list_item, null);
                 infoViewHolder = new InfoViewHolder(convertView);
                 convertView.setTag(infoViewHolder);
             } else {

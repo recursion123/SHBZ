@@ -36,7 +36,6 @@ public class LoginActivity extends Activity {
 
     private BootstrapEditText ipAddress;
     SharedPreferences preferences;
-    private String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +57,7 @@ public class LoginActivity extends Activity {
         //≈‰÷√IPµÿ÷∑
         ipAddress = (BootstrapEditText) findViewById(R.id.ip_address);
         preferences = getSharedPreferences("SHBZ", 0);
-        s = preferences.getString("ipAddress", "");
+        String s = preferences.getString("ipAddress", "");
         ipAddress.setText(s);
 
         loginBtn = (BootstrapButton) findViewById(R.id.loginBtn);
